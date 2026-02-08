@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from '../dtos/user/auth.dto';
 
+@ApiTags('Usuários')
 @Controller('user')
 export class UserController {
 
@@ -15,7 +16,7 @@ export class UserController {
     @Public()
     @ApiOperation({ summary: 'Criar usuário' })
     @ApiResponse({ status: 201, description: 'Usuário criado com sucesso' })
-    @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+    @ApiResponse({ status: 409, description: 'Usuário já cadastrado' })
     @Post('/create')
     async create(@Body() data: CreateUserDTO) {
         return await this.userService.create(data);
