@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id        String  @id @unique @default(uuid())
-  is_active Boolean @default(true) 
+  is_active Boolean @default(true)
   sys_admin Boolean @default(false)
   name      String  @db.VarChar(255)
   email     String  @unique
@@ -27,12 +27,30 @@ model User {
 
   address Json?
 
-  account_stage  String?
-  language       String
-  theme          String
+  account_stage String?
+  language      String
+  theme         String
 
   created_at DateTime @default(now()) @db.Timestamp
   updated_at DateTime @updatedAt @db.Timestamp
 
+  group_id String?
+  Group    Group?  @relation(fields: [group_id], references: [id])
+
   @@map("users")
+}
+
+model Group {
+  id        String  @id @unique @default(uuid())
+  is_active Boolean @default(true)
+  name      String  @db.VarChar(255)
+  email     String?
+  shortname String? @db.VarChar(255)
+
+  created_at DateTime @default(now()) @db.Timestamp
+  updated_at DateTime @updatedAt @db.Timestamp
+
+  User User[]
+
+  @@map("groups")
 }

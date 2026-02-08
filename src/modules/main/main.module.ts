@@ -6,6 +6,7 @@ import { TeamController } from './controllers/team.controller';
 import { AuthController } from './controllers/auth.controller';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
+import { TeamService } from './services/team.service';
 
 @Module({
     controllers: [
@@ -17,7 +18,8 @@ import { AuthService } from './services/auth.service';
         PrismaService, 
         MailService,
         AuthService,
-        UserService
+        UserService,
+        TeamService
     ]
 })
 export class MainModule { }
