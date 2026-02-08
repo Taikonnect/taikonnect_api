@@ -4,7 +4,8 @@ import { MailService } from 'src/external/mailer/mail.service';
 import { UserController } from './controllers/user.controller';
 import { TeamController } from './controllers/team.controller';
 import { AuthController } from './controllers/auth.controller';
-import { UserService } from './services/auth.service';
+import { UserService } from './services/user.service';
+import { AuthService } from './services/auth.service';
 
 @Module({
     controllers: [
@@ -15,6 +16,7 @@ import { UserService } from './services/auth.service';
     providers: [
         PrismaService, 
         MailService,
+        AuthService,
         UserService
     ]
 })

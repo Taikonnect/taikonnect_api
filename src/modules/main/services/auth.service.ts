@@ -8,7 +8,7 @@ import { jwt } from 'src/configs/env';
 
 
 @Injectable()
-export class UserService {
+export class AuthService {
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -24,6 +24,12 @@ export class UserService {
         });
 
         return !!user;
+    }
+
+    async buildAvatar() {
+        const baseURL = process.env.BASE_URL;
+        
+        return `${baseURL}/img/user.jpg`
     }
 
     async authenticate(data: LoginDTO) {
@@ -76,6 +82,8 @@ export class UserService {
             account_stage: user.account_stage,
             language: user.language,
             theme: user.theme,
+            group_name: 'Wakaba Taiko',
+            avatar: this.buildAvatar()
         };
 
         const today = new Date();
@@ -99,4 +107,5 @@ export class UserService {
             ...response
         };
     }
+
 }
