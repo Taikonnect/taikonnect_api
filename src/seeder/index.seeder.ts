@@ -5,16 +5,15 @@ const prisma = new PrismaClient();
 
 async function indexSeeders() {
 
-  // User seed
-  // await userSeeder()
-  //   .then(() => {
-  //     console.log('Users finished - ✔️');
-  //   })
-  //   .catch(async (error) => {
-  //     console.error('Error to insert data:', error.message);
-  //     process.exit(1);
-  //   })
-  //   .finally(async () => await prisma.$disconnect());
+  await userSeeder()
+    .then(() => {
+      console.log('Users finished - ✔️');
+    })
+    .catch(async (error) => {
+      console.error('Error to insert data:', error.message);
+      process.exit(1);
+    })
+    .finally(async () => await prisma.$disconnect());
 }
 
 
