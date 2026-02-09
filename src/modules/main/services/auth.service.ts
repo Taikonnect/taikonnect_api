@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from 'src/external/mailer/mail.service';
-import { LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
+import { ChangePasswordDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
 import { jwt } from 'src/configs/env';
 import { PasswordChange } from '@prisma/client';
 import { randomBytes } from 'crypto';
@@ -159,7 +159,7 @@ export class AuthService {
     }
 
     public generateCode(length = 5) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const chars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
         let result = '';
         for (let i = 0; i < length; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -226,6 +226,43 @@ export class AuthService {
         if (email !== user.email) throw new UnauthorizedException('Código inválido');
 
         return codeGenerated;
+    }
+
+    async changePassword(data: ChangePasswordDTO) {
+
+        const codeGenerated = await this.prismaService.passwordChange.findUnique({
+            where: {
+                id: data.id
+            }
+        });
+
+        if (!codeGenerated){
+            console.log('Código não encontrado')
+            throw new NotFoundException('Falha ao alterar senha')
+        };
+
+        if (codeGenerated.token !== data.token) {
+            console.log('Token inválido')
+            throw new NotFoundException('Falha ao alterar senha')
+        };
+
+        const password = await bcrypt.hash(data.password, 10);
+        
+        const user = await this.prismaService.user.update({
+            where: {
+                id: codeGenerated.user_id
+            },
+            data: {
+                password: password
+            }
+        })
+
+        return {
+            message: 'Senha alterada com sucesso',
+            email: user.email,
+            name: user.name
+        }
+
     }
 
 }

@@ -68,3 +68,19 @@ export class ValidateCodeDTO {
     @IsString()
     code: string;
 }
+
+export class ChangePasswordDTO {
+    @IsNotEmpty()
+    @IsString()
+    id: string;
+    
+    @ApiProperty({ type: String, example: '************' })
+    @IsNotEmpty()
+    @IsString()
+    password: string;
+    
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @IsString()
+    token: string;
+}

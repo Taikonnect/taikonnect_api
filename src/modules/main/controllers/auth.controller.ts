@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
-import { CreateUserDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
+import { ChangePasswordDTO, CreateUserDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
 import { AuthService } from '../services/auth.service';
 import { Public } from 'src/decorators/auth-guard.decorator';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -42,11 +42,11 @@ export class AuthController {
     }
 
     @Public()
-    @ApiOperation({ summary: 'Login' })
-    @ApiResponse({ status: 201, description: 'Login realizado com sucesso' })
-    @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+    @ApiOperation({ summary: 'Alteração de senha' })
+    @ApiResponse({ status: 201, description: 'Senha atualizada com sucesso' })
+    @ApiResponse({ status: 401, description: 'Falha ao alterar senha' })
     @Post('/change-password')
-    async changePassword(@Body() data: LoginDTO) {
-        return await this.authService.authenticate(data);
+    async changePassword(@Body() data: ChangePasswordDTO) {
+        return await this.authService.changePassword(data);
     }
 }
