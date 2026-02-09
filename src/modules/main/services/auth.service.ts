@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from 'src/external/mailer/mail.service';
-import { LoginDTO } from '../dtos/user/auth.dto';
+import { LoginDTO, ResetPasswordDTO } from '../dtos/user/auth.dto';
 import { jwt } from 'src/configs/env';
+import { PasswordChange } from '@prisma/client';
+import { randomBytes } from 'crypto';
+import { ProductMainName } from 'src/shared/constants/project.params';
 
 
 @Injectable()
@@ -28,7 +31,7 @@ export class AuthService {
 
     async buildAvatar() {
         const baseURL = process.env.BASE_URL;
-        
+
         return `${baseURL}/img/user.jpg`
     }
 
@@ -108,4 +111,89 @@ export class AuthService {
         };
     }
 
+
+    async resetPassword(data: ResetPasswordDTO) {
+        const email = data.email ?? null;
+
+        if (!email) {
+            throw new BadRequestException('E-mail inválido');
+        }
+
+        const user = await this.prismaService.user.findUnique({
+            where: { email },
+        });
+
+        if (!user || !user.is_active) {
+            throw new UnauthorizedException('Usuário não encontrado');
+        }
+
+        const token = randomBytes(32).toString('hex');
+
+        const code = await this.generateUniqueCode();
+
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 15);
+
+        const passwordChange = await this.prismaService.passwordChange.create({
+            data: {
+                user_id: user.id,
+                token,
+                code,
+                expires_at: expiresAt,
+            },
+        });
+
+        await this._mailService.ResetPassword({
+            to: user.email,
+            name: user.name,
+            code: passwordChange.code,
+            token: passwordChange.token,
+            subject: `Redefinição de senha - ${ProductMainName}`,
+            text: ' '
+        });
+
+        return {
+            status: true,
+            message: 'Código de redefinição de senha enviado com sucesso',
+        };
+    }
+
+    public generateCode(length = 5) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    private async generateUniqueCode(): Promise<string> {
+        let code: string;
+        let exists = true;
+
+        while (exists) {
+            code = this.generateCode(5);
+            const existing = await this.prismaService.passwordChange.findFirst({
+                where: { code },
+            });
+            if (!existing) exists = false;
+        }
+
+        return code;
+    }
+
+    async createCode(user_id: string, token: string, expires_at: Date): Promise<PasswordChange> {
+        const code = await this.generateUniqueCode();
+
+        return this.prismaService.passwordChange.create({
+            data: {
+                user_id,
+                token,
+                code,
+                expires_at,
+            },
+        });
+    }
+
 }
+

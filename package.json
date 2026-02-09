@@ -30,6 +30,7 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.4.2",
     "@prisma/client": "^5.16.2",
+    "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "nodemailer": "^6.9.14",

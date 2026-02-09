@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        String  @id @unique @default(uuid())
+  id        String  @id @default(uuid())
   is_active Boolean @default(true)
   sys_admin Boolean @default(false)
   name      String  @db.VarChar(255)
@@ -37,11 +34,13 @@ model User {
   group_id String?
   Group    Group?  @relation(fields: [group_id], references: [id])
 
+  passwordChanges PasswordChange[]
+
   @@map("users")
 }
 
 model Group {
-  id        String  @id @unique @default(uuid())
+  id        String  @id @default(uuid())
   is_active Boolean @default(true)
   name      String  @db.VarChar(255)
   email     String?
@@ -50,7 +49,22 @@ model Group {
   created_at DateTime @default(now()) @db.Timestamp
   updated_at DateTime @updatedAt @db.Timestamp
 
-  User User[]
+  users User[]
 
   @@map("groups")
+}
+
+model PasswordChange {
+  id      String @id @default(uuid())
+  code    String
+  token   String
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  expires_at DateTime
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("password_changes")
 }

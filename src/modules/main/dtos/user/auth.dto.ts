@@ -49,3 +49,10 @@ export class CreateUserDTO {
     @IsString()
     group_id: string;
 }
+
+export class ResetPasswordDTO {
+    @ApiProperty({ type: String ,example: 'user@domain.com.br' })
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
+}

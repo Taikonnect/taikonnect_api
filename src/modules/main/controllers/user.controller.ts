@@ -4,13 +4,16 @@ import { User } from 'src/decorators/user.decorator';
 import { UserService } from '../services/user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from '../dtos/user/auth.dto';
+import Mail from 'nodemailer/lib/mailer';
+import { MailService } from 'src/external/mailer/mail.service';
 
 @ApiTags('Usuários')
 @Controller('user')
 export class UserController {
 
     constructor(
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly mailService: MailService
     ) { }
 
     @Public()
