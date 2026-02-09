@@ -213,17 +213,17 @@ export class AuthService {
             }
         });
 
+        if (!codeGenerated) throw new NotFoundException('Código não encontrado');
+
         const user = await this.prismaService.user.findUnique({
             where: {
                 id: codeGenerated.user_id
             }
         })
 
-        if(!codeGenerated) throw new NotFoundException('Código não encontrado');
+        if (now > codeGenerated.expires_at) throw new UnauthorizedException('Código expirado');
 
-        if(now > codeGenerated.expires_at) throw new UnauthorizedException('Código expirado');
-
-        if(email !== user.email) throw new UnauthorizedException('Código inválido');
+        if (email !== user.email) throw new UnauthorizedException('Código inválido');
 
         return codeGenerated;
     }
