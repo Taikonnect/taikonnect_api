@@ -56,3 +56,15 @@ export class ResetPasswordDTO {
     @IsEmail()
     email: string;
 }
+
+export class ValidateCodeDTO {
+    @ApiProperty({ type: String ,example: 'user@domain.com.br' })
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
+    
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @IsString()
+    code: string;
+}

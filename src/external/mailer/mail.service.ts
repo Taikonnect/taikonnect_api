@@ -42,7 +42,7 @@ export class MailService {
                 <tr>
                   <td align="center"
                       style="color:#555; font-size:15px; line-height:1.6; padding-bottom:20px; text-align:center;">
-                    Olá,<br /><br />
+                    Olá, ${data.name}<br /><br />
                     Use o código abaixo para concluir sua verificação.<br />
                     Este código é válido por alguns minutos.
                   </td>

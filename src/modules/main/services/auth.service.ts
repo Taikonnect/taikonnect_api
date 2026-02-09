@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from 'src/external/mailer/mail.service';
-import { LoginDTO, ResetPasswordDTO } from '../dtos/user/auth.dto';
+import { LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
 import { jwt } from 'src/configs/env';
 import { PasswordChange } from '@prisma/client';
 import { randomBytes } from 'crypto';
@@ -79,7 +79,7 @@ export class AuthService {
         const payload = {
             id: user.id,
             sys_admin: user.sys_admin,
-            name: user.name,
+            name: user.nickname ?? this.getFirstName(user.name),
             email: user.email,
             nickname: user.nickname,
             account_stage: user.account_stage,
@@ -193,6 +193,39 @@ export class AuthService {
                 expires_at,
             },
         });
+    }
+
+    public getFirstName(fullName: string): string {
+        if (!fullName) return '';
+
+        return fullName.trim().split(/\s+/)[0];
+    }
+
+    async validateCode(data: ValidateCodeDTO) {
+
+        const email = data.email;
+        const code = data.code;
+        const now = new Date();
+
+        const codeGenerated = await this.prismaService.passwordChange.findFirst({
+            where: {
+                code: code
+            }
+        });
+
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: codeGenerated.user_id
+            }
+        })
+
+        if(!codeGenerated) throw new NotFoundException('Código não encontrado');
+
+        if(now > codeGenerated.expires_at) throw new UnauthorizedException('Código expirado');
+
+        if(email !== user.email) throw new UnauthorizedException('Código inválido');
+
+        return codeGenerated;
     }
 
 }

@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
-import { CreateUserDTO, LoginDTO, ResetPasswordDTO } from '../dtos/user/auth.dto';
+import { CreateUserDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
 import { AuthService } from '../services/auth.service';
 import { Public } from 'src/decorators/auth-guard.decorator';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -23,7 +23,7 @@ export class AuthController {
 
     @Public()
     @ApiOperation({ summary: 'Esqueci minha senha' })
-    @ApiResponse({ status: 201, description: 'Login realizado com sucesso' })
+    @ApiResponse({ status: 201, description: 'E-mail de recuperação de senha enviado com sucesso' })
     @ApiResponse({ status: 400, description: 'E-mail inválido' })
     @ApiResponse({ status: 401, description: 'Usuário não encontrado' })
     @Post('/reset-password')
@@ -32,12 +32,13 @@ export class AuthController {
     }
 
     @Public()
-    @ApiOperation({ summary: 'Login' })
-    @ApiResponse({ status: 201, description: 'Login realizado com sucesso' })
-    @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+    @ApiOperation({ summary: 'Validação de código de recuperação de senha' })
+    @ApiResponse({ status: 201, description: 'Código válido' })
+    @ApiResponse({ status: 401, description: 'Código expirado' })
+    @ApiResponse({ status: 404, description: 'Código inválido' })
     @Post('/validate-code')
-    async validateCode(@Body() data: LoginDTO) {
-        return await this.authService.authenticate(data);
+    async validateCode(@Body() data: ValidateCodeDTO) {
+        return await this.authService.validateCode(data);
     }
 
     @Public()
