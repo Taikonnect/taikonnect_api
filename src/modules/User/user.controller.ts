@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Public } from 'src/decorators/auth-guard.decorator';
 import { User } from 'src/decorators/user.decorator';
-import { UserService } from '../services/user.service';
+import { UserService } from './user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CreateUserDTO } from '../dtos/user/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO } from '../Auth/dto/auth.dto';
 import Mail from 'nodemailer/lib/mailer';
 import { MailService } from 'src/external/mailer/mail.service';
 
@@ -23,5 +23,11 @@ export class UserController {
     @Post('/create')
     async create(@Body() data: CreateUserDTO) {
         return await this.userService.create(data);
+    }
+
+    @Public()
+    @Get('/check-permission')
+    async checkPermission(@Query() data: CheckPermissionDTO) {
+        return await this.userService.checkPermission(data);
     }
 }

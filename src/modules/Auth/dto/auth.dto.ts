@@ -84,3 +84,13 @@ export class ChangePasswordDTO {
     @IsString()
     token: string;
 }
+
+export class CheckPermissionDTO {
+    @IsNotEmpty()
+    @IsString()
+    user_id: string;
+
+    @IsNotEmpty()
+    @IsString()
+    permission: string;
+}

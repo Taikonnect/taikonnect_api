@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { userSeeder } from './user.seeder';
 import { groupSeeder } from './group.seeder';
+import { permissionSeeder } from './profile.seeder';
 
 const prisma = new PrismaClient();
 
@@ -19,6 +20,16 @@ async function indexSeeders() {
     await groupSeeder()
     .then(() => {
       console.log('Groups finished - ✔️');
+    })
+    .catch(async (error) => {
+      console.error('Error to insert data:', error.message);
+      process.exit(1);
+    })
+    .finally(async () => await prisma.$disconnect());
+
+    await permissionSeeder()
+    .then(() => {
+      console.log('Permissions finished - ✔️');
     })
     .catch(async (error) => {
       console.error('Error to insert data:', error.message);

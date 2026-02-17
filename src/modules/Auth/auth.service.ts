@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from 'src/external/mailer/mail.service';
-import { ChangePasswordDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
+import { ChangePasswordDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from './dto/auth.dto';
 import { jwt } from 'src/configs/env';
 import { PasswordChange } from '@prisma/client';
 import { randomBytes } from 'crypto';

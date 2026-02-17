@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './api/mailer/mail.service';
 import { JwtModule } from '@nestjs/jwt';
-import { MainModule } from './modules/main/main.module';
+import { MainModule } from './modules/main.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 @Module({

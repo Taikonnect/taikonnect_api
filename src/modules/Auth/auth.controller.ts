@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
-import { ChangePasswordDTO, CreateUserDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from '../dtos/user/auth.dto';
-import { AuthService } from '../services/auth.service';
+import { ChangePasswordDTO, CreateUserDTO, LoginDTO, ResetPasswordDTO, ValidateCodeDTO } from './dto/auth.dto';
+import { AuthService } from './auth.service';
 import { Public } from 'src/decorators/auth-guard.decorator';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 

@@ -35,6 +35,7 @@ model User {
   Group    Group?  @relation(fields: [group_id], references: [id])
 
   passwordChanges PasswordChange[]
+  permissionUsers PermissionUser[]
 
   @@map("users")
 }
@@ -67,4 +68,17 @@ model PasswordChange {
   updated_at DateTime @updatedAt
 
   @@map("password_changes")
+}
+
+model PermissionUser {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  profile String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, profile])
+  @@map("permission_users")
 }
