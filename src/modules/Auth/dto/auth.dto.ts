@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString } from "@nestjs/class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginDTO {

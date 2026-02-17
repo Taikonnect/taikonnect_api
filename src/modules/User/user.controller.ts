@@ -25,9 +25,14 @@ export class UserController {
         return await this.userService.create(data);
     }
 
-    @Public()
     @Get('/check-permission')
     async checkPermission(@Query() data: CheckPermissionDTO) {
         return await this.userService.checkPermission(data);
+    }
+
+    @ApiOperation({ summary: 'Paginação de usuário' })
+    @Get('/combolist')
+    async combolist() {
+        return await this.userService.combolist();
     }
 }

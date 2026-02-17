@@ -112,7 +112,7 @@ export class UserService {
             }
         })
 
-        if(profileList.includes(data.permission)) {
+        if (profileList.includes(data.permission)) {
             return {
                 hasPermission: true,
                 sys_admin: user.sys_admin,
@@ -127,4 +127,26 @@ export class UserService {
 
     }
 
+    async combolist() {
+        const users = await this.prismaService.user.findMany({
+            where: {
+                is_active: true,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                nickname: true,
+                is_active: true,
+                sys_admin: true,
+                birth_date: true,
+                rg: true,
+                cpf: true,
+                phone: true,
+                address: true
+            }
+        })
+
+        return users;
+    }
 }
