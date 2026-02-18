@@ -3,7 +3,7 @@ import { Public } from 'src/decorators/auth-guard.decorator';
 import { User } from 'src/decorators/user.decorator';
 import { UserService } from './user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CheckPermissionDTO, CreateUserDTO } from '../Auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO } from '../Auth/dto/auth.dto';
 import Mail from 'nodemailer/lib/mailer';
 import { MailService } from 'src/external/mailer/mail.service';
 
@@ -30,9 +30,15 @@ export class UserController {
         return await this.userService.checkPermission(data);
     }
 
-    @ApiOperation({ summary: 'Paginação de usuário' })
-    @Get('/combolist')
-    async combolist() {
-        return await this.userService.combolist();
+    @ApiOperation({ summary: 'Listagem de usuário' })
+    @Get('/list')
+    async ListUsers(@Query() data: ListDTO) {
+        return await this.userService.ListUsers(data);
+    }
+
+    @ApiOperation({ summary: 'Listagem de permissões' })
+    @Get('/list-permissions')
+    async ListPermissions() {
+        return await this.userService.ListPermissions();
     }
 }

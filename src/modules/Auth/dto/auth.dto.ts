@@ -2,7 +2,7 @@ import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolea
 import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginDTO {
-    @ApiProperty({ type: String ,example: 'user@domain.com.br' })
+    @ApiProperty({ type: String, example: 'user@domain.com.br' })
     @IsNotEmpty()
     @IsEmail()
     email: string;
@@ -51,18 +51,18 @@ export class CreateUserDTO {
 }
 
 export class ResetPasswordDTO {
-    @ApiProperty({ type: String ,example: 'user@domain.com.br' })
+    @ApiProperty({ type: String, example: 'user@domain.com.br' })
     @IsNotEmpty()
     @IsEmail()
     email: string;
 }
 
 export class ValidateCodeDTO {
-    @ApiProperty({ type: String ,example: 'user@domain.com.br' })
+    @ApiProperty({ type: String, example: 'user@domain.com.br' })
     @IsNotEmpty()
     @IsEmail()
     email: string;
-    
+
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @IsString()
@@ -73,12 +73,12 @@ export class ChangePasswordDTO {
     @IsNotEmpty()
     @IsString()
     id: string;
-    
+
     @ApiProperty({ type: String, example: '************' })
     @IsNotEmpty()
     @IsString()
     password: string;
-    
+
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @IsString()
@@ -93,4 +93,22 @@ export class CheckPermissionDTO {
     @IsNotEmpty()
     @IsString()
     permission: string;
+}
+
+export class ListDTO {
+
+    @ApiProperty({ type: String })
+    @IsOptional()
+    @IsString()
+    name: string;
+
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @IsString()
+    permission: string;
+
+    @ApiProperty({ type: Boolean })
+    @IsNotEmpty()
+    @IsBoolean()
+    is_active: boolean;
 }

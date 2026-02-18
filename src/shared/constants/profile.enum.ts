@@ -1,7 +1,8 @@
 export enum ProfileType {
     Admin = 'admin',
     Moderator = 'moderator',
-    Financial = 'financial'
+    Financial = 'financial',
+    Member = 'member'
 }
 
 export enum PermissionType {

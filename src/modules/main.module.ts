@@ -7,6 +7,7 @@ import { AuthController } from './Auth/auth.controller';
 import { UserService } from './User/user.service';
 import { AuthService } from './Auth/auth.service';
 import { TeamService } from './Team/team.service';
+import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 
 @Module({
     controllers: [
@@ -19,7 +20,8 @@ import { TeamService } from './Team/team.service';
         MailService,
         AuthService,
         UserService,
-        TeamService
+        TeamService,
+        BooleanHandlerService
     ]
 })
 export class MainModule { }

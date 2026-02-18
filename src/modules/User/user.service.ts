@@ -1,9 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { CheckPermissionDTO, CreateUserDTO } from '../Auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO } from '../Auth/dto/auth.dto';
 import * as bcrypt from 'bcryptjs'
 import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
+import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 
 
 @Injectable()
@@ -11,6 +12,7 @@ export class UserService {
 
     constructor(
         private readonly prismaService: PrismaService,
+        private readonly booleanHandleService: BooleanHandlerService,
     ) { }
 
     async create(data: CreateUserDTO) {
@@ -40,7 +42,7 @@ export class UserService {
                 cpf: '',
                 phone: '',
                 address: '',
-                account_stage: AccountStatus.accept_pending,
+                account_stage: AccountStatus.pending,
                 language: data.language,
                 theme: data.theme,
                 group_id: data.group_id
@@ -127,11 +129,32 @@ export class UserService {
 
     }
 
-    async combolist() {
+    async ListUsers(data: ListDTO) {
+
+        const active = await this.booleanHandleService.convert(data.is_active);
+
+        const where: any = {
+            is_active: active,
+            account_stage: {
+                not: AccountStatus.pending
+            }
+        };
+
+        console.log(active)
+
+        if (data.name) {
+            where.name = {
+                contains: data.name,
+                mode: 'insensitive'
+            };
+        }
+
+        if (data.permission) {
+            where.permission = data.permission;
+        }
+
         const users = await this.prismaService.user.findMany({
-            where: {
-                is_active: true,
-            },
+            where,
             select: {
                 id: true,
                 name: true,
@@ -145,8 +168,50 @@ export class UserService {
                 phone: true,
                 address: true
             }
+        });
+
+
+        const counting = await this.prismaService.user.findMany({
+            where: {
+                account_stage: {
+                    not: AccountStatus.pending
+                }
+            }
         })
 
-        return users;
+        const inactiveUsers = counting.filter(user => user.is_active === false).length;
+        const isActiveUsers = counting.filter(user => user.is_active === true).length;
+
+        return {
+            data: users,
+            active: isActiveUsers,
+            inactive: inactiveUsers,
+            total: counting.length
+        };
+    }
+
+    async ListPermissions() {
+
+        const ProfileTypeList = [
+            {
+                label: 'Administrador',
+                value: ProfileType.Admin,
+            },
+            {
+                label: 'Moderador',
+                value: ProfileType.Moderator,
+            },
+            {
+                label: 'Financeiro',
+                value: ProfileType.Financial,
+            },
+            {
+                label: 'Membro',
+                value: ProfileType.Member,
+            }
+        ]
+
+        return ProfileTypeList;
+
     }
 }
