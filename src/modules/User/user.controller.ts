@@ -41,4 +41,11 @@ export class UserController {
     async ListPermissions() {
         return await this.userService.ListPermissions();
     }
+
+    @ApiOperation({ summary: 'Detalhar usuário' })
+    @Get('/detail/:id')
+    async detail(@Param('id') id: string) {
+        return await this.userService.detail(id);
+    }
+
 }

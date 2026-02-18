@@ -263,4 +263,35 @@ export class UserService {
         return ProfileTypeList;
 
     }
+
+    async detail(id: string) {
+
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                nickname: true,
+                is_active: true,
+                sys_admin: true,
+                birth_date: true,
+                rg: true,
+                cpf: true,
+                phone: true,
+                address: true,
+
+                permissionUsers: {
+                    select: {
+                        profile: true
+                    }
+                }
+            },
+        });
+
+        return user;
+
+    }
 }
