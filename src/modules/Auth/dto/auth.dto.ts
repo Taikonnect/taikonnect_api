@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean } from "@nestjs/class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean, MaxLength } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginDTO {
@@ -111,4 +111,71 @@ export class ListDTO {
     @IsOptional()
     @IsBoolean()
     is_active: boolean;
+}
+
+export class UpdateUserDTO {
+
+    @ApiProperty({ type: String, required: true })
+    @IsNotEmpty()
+    @IsString()
+    id: string;
+
+    @ApiProperty({ type: Boolean, required: true })
+    @IsNotEmpty()
+    @IsBoolean()
+    is_active?: boolean;
+
+    @ApiProperty({ type: String, required: true })
+    @IsNotEmpty()
+    @IsString()
+    @MaxLength(255)
+    name?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    nickname?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsDate()
+    birth_date?: Date;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    rg?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    cpf?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    phone?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    address?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    language?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    theme?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    observation?: string;
+
 }

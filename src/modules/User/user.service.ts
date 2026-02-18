@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { CheckPermissionDTO, CreateUserDTO, ListDTO } from '../Auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../Auth/dto/auth.dto';
 import * as bcrypt from 'bcryptjs'
 import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
@@ -282,7 +282,9 @@ export class UserService {
                 cpf: true,
                 phone: true,
                 address: true,
+                observation: true,
 
+                emergencyContacts: true,
                 permissionUsers: {
                     select: {
                         profile: true
@@ -292,6 +294,34 @@ export class UserService {
         });
 
         return user;
+
+    }
+
+    async update(data: UpdateUserDTO) {
+
+        
+        try {
+
+            const exist =  await this.prismaService.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            })
+
+            const user = await this.prismaService.user.update({
+                where: {
+                    id: data.id
+                },
+                data
+            })
+
+            return {
+                message: 'Usuário atualizado com sucesso',
+            }
+        }
+        catch (error) {
+            throw new ConflictException('Houve um erro ao atualizar o usuário')
+        }
 
     }
 }

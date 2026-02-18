@@ -3,7 +3,7 @@ import { Public } from 'src/decorators/auth-guard.decorator';
 import { User } from 'src/decorators/user.decorator';
 import { UserService } from './user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CheckPermissionDTO, CreateUserDTO, ListDTO } from '../Auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../Auth/dto/auth.dto';
 import Mail from 'nodemailer/lib/mailer';
 import { MailService } from 'src/external/mailer/mail.service';
 
@@ -46,6 +46,12 @@ export class UserController {
     @Get('/detail/:id')
     async detail(@Param('id') id: string) {
         return await this.userService.detail(id);
+    }
+
+    @ApiOperation({ summary: 'Atualizar usuário' })
+    @Post('/update')
+    async update(@Body() data: UpdateUserDTO) {
+        return await this.userService.update(data);
     }
 
 }

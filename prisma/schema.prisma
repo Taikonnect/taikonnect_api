@@ -28,6 +28,8 @@ model User {
   language      String
   theme         String
 
+  observation  String? @db.VarChar(255)
+
   created_at DateTime @default(now()) @db.Timestamp
   updated_at DateTime @updatedAt @db.Timestamp
 
@@ -36,6 +38,7 @@ model User {
 
   passwordChanges PasswordChange[]
   permissionUsers PermissionUser[]
+  emergencyContacts EmergencyContact[]
 
   @@map("users")
 }
@@ -81,4 +84,15 @@ model PermissionUser {
 
   @@id([user_id, profile])
   @@map("permission_users")
+}
+
+model EmergencyContact {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id])
+
+  name String
+  phone String
+
+  @@id([user_id])
+  @@map("emergency_contacts")
 }
