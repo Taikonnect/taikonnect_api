@@ -138,8 +138,8 @@ export class UserService {
                 not: AccountStatus.pending
             }
         };
-
-        if (active) {
+        
+        if ([false, true].includes(active)) {
             where.is_active = active
         }
 
