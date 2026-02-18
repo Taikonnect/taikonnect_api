@@ -158,6 +158,12 @@ export class UserService {
                         contains: data.name.trim(),
                         mode: 'insensitive'
                     }
+                },
+                {
+                    nickname: {
+                        contains: data.name.trim(),
+                        mode: 'insensitive'
+                    }
                 }
             ];
         }
