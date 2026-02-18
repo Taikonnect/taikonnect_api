@@ -5,6 +5,7 @@ import * as bcrypt from 'bcryptjs'
 import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
 import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
+import { ProfileHandler } from 'src/shared/handlers/profile.handler';
 
 
 @Injectable()
@@ -13,6 +14,7 @@ export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly booleanHandleService: BooleanHandlerService,
+        private readonly profileHandler: ProfileHandler
     ) { }
 
     async create(data: CreateUserDTO) {
@@ -138,7 +140,7 @@ export class UserService {
                 not: AccountStatus.pending
             }
         };
-        
+
         if ([false, true].includes(active)) {
             where.is_active = active
         }
@@ -181,9 +183,35 @@ export class UserService {
                 rg: true,
                 cpf: true,
                 phone: true,
-                address: true
-            }
+                address: true,
+
+                permissionUsers: {
+                    select: {
+                        profile: true
+                    }
+                }
+            },
         });
+
+        await Promise.all(
+            users.map(async (user: any) => {
+
+                const list = await Promise.all(
+                    user.permissionUsers.map(async (perm: any) => {
+                        return await this.profileHandler.getProfileName(
+                            perm.profile
+                        );
+                    })
+                );
+
+                user.permissionUsers = user.permissionUsers.map((perm: any, index: number) => ({
+                    ...perm,
+                    profile_label: list[index]
+                }));
+
+                return user;
+            })
+        );
 
 
         const counting = await this.prismaService.user.findMany({
