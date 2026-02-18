@@ -97,18 +97,18 @@ export class CheckPermissionDTO {
 
 export class ListDTO {
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, required: false })
     @IsOptional()
     @IsString()
     name: string;
 
-    @ApiProperty({ type: String })
-    @IsNotEmpty()
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
     @IsString()
     permission: string;
 
-    @ApiProperty({ type: Boolean })
-    @IsNotEmpty()
+    @ApiProperty({ type: Boolean, required: false })
+    @IsOptional()
     @IsBoolean()
     is_active: boolean;
 }

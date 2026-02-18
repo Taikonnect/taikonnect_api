@@ -134,23 +134,38 @@ export class UserService {
         const active = await this.booleanHandleService.convert(data.is_active);
 
         const where: any = {
-            is_active: active,
             account_stage: {
                 not: AccountStatus.pending
             }
         };
 
-        console.log(active)
+        if (active) {
+            where.is_active = active
+        }
 
-        if (data.name) {
-            where.name = {
-                contains: data.name,
-                mode: 'insensitive'
-            };
+        if (data.name?.trim()) {
+            where.OR = [
+                {
+                    name: {
+                        contains: data.name.trim(),
+                        mode: 'insensitive'
+                    }
+                },
+                {
+                    email: {
+                        contains: data.name.trim(),
+                        mode: 'insensitive'
+                    }
+                }
+            ];
         }
 
         if (data.permission) {
-            where.permission = data.permission;
+            where.permissionUsers = {
+                some: {
+                    profile: data.permission
+                }
+            }
         }
 
         const users = await this.prismaService.user.findMany({
