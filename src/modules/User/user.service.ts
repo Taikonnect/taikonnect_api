@@ -304,8 +304,10 @@ export class UserService {
 
         const updateData = {
             ...data,
-            birth_date: new Date(`${data.birth_date}T00:00:00`)
-        }
+            birth_date: data.birth_date
+                ? new Date(`${data.birth_date}T00:00:00`)
+                : null
+        };
 
 
         try {
@@ -328,6 +330,7 @@ export class UserService {
             }
         }
         catch (error) {
+            console.log()
             throw new ConflictException('Houve um erro ao atualizar o usuário')
         }
 
