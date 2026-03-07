@@ -297,7 +297,8 @@ export class UserService {
 
         return {
             ...user,
-            birth_date: user.birth_date?.toISOString().split('T')[0]
+            birth_date: user.birth_date?.toISOString().split('T')[0],
+            avatar: `${process.env.BASE_URL}${user.avatar}`
         };
 
     }
