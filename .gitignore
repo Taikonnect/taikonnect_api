@@ -7,7 +7,7 @@ docker-compose.yaml
 /node_modules
 /build
 
-/storage
+/storage/*
 
 # Logs
 logs
