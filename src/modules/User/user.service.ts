@@ -299,6 +299,11 @@ export class UserService {
 
     async update(data: UpdateUserDTO) {
 
+        const updateData = {
+            ...data,
+            birth_date: new Date(`${data.birth_date}T00:00:00`)
+        }
+
         
         try {
 
@@ -312,7 +317,7 @@ export class UserService {
                 where: {
                     id: data.id
                 },
-                data
+                data: updateData
             })
 
             return {
