@@ -21,9 +21,12 @@ import { join } from 'path';
         }
       }
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-    }),
+    ServeStaticModule.forRoot(
+      {
+        rootPath: join(__dirname, '..', 'storage'),
+        serveRoot: '/storage',
+      }
+    ),
     MainModule
   ],
   controllers: [],

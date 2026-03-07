@@ -6,6 +6,7 @@ import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
 import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 import { ProfileHandler } from 'src/shared/handlers/profile.handler';
+import * as Multer from 'multer';
 
 
 @Injectable()
@@ -284,6 +285,7 @@ export class UserService {
                 address: true,
                 observation: true,
                 emergency_contacts: true,
+                avatar: true,
 
                 permissionUsers: {
                     select: {
@@ -300,39 +302,27 @@ export class UserService {
 
     }
 
-    async update(data: UpdateUserDTO) {
+    async update(data: UpdateUserDTO, avatar?: Multer.File) {
 
-        const updateData = {
+        const updateData: any = {
             ...data,
-            birth_date: data.birth_date
-                ? new Date(`${data.birth_date}T00:00:00`)
-                : null
+            is_active: await this.booleanHandleService.convert(data.is_active),
+            ...(data.birth_date && {
+                birth_date: new Date(`${data.birth_date}T00:00:00`)
+            })
+        }
+
+        if (avatar) {
+            updateData.avatar = `/storage/avatar/${data.id}/${avatar.filename}`;
+        }
+
+        await this.prismaService.user.update({
+            where: { id: data.id },
+            data: updateData
+        });
+
+        return {
+            message: 'Usuário atualizado com sucesso',
         };
-
-
-        try {
-
-            const exist = await this.prismaService.user.findUnique({
-                where: {
-                    id: data.id
-                }
-            })
-
-            const user = await this.prismaService.user.update({
-                where: {
-                    id: data.id
-                },
-                data: updateData
-            })
-
-            return {
-                message: 'Usuário atualizado com sucesso',
-            }
-        }
-        catch (error) {
-            console.log()
-            throw new ConflictException('Houve um erro ao atualizar o usuário')
-        }
-
     }
 }
