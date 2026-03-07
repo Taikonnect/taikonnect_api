@@ -9,6 +9,7 @@ import { AuthService } from './Auth/auth.service';
 import { TeamService } from './Team/team.service';
 import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 import { ProfileHandler } from 'src/shared/handlers/profile.handler';
+import { StorageHandler } from 'src/shared/handlers/storage.handler';
 
 @Module({
     controllers: [
@@ -23,7 +24,8 @@ import { ProfileHandler } from 'src/shared/handlers/profile.handler';
         UserService,
         TeamService,
         BooleanHandlerService,
-        ProfileHandler
+        ProfileHandler,
+        StorageHandler
     ]
 })
 export class MainModule { }

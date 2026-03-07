@@ -7,6 +7,7 @@ import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
 import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 import { ProfileHandler } from 'src/shared/handlers/profile.handler';
 import * as Multer from 'multer';
+import { StorageHandler } from 'src/shared/handlers/storage.handler';
 
 
 @Injectable()
@@ -15,7 +16,8 @@ export class UserService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly booleanHandleService: BooleanHandlerService,
-        private readonly profileHandler: ProfileHandler
+        private readonly profileHandler: ProfileHandler,
+        private readonly storageHandler: StorageHandler
     ) { }
 
     async create(data: CreateUserDTO) {
@@ -295,10 +297,26 @@ export class UserService {
             },
         });
 
+        const contacts =
+            typeof user.emergency_contacts === 'string'
+                ? JSON.parse(user.emergency_contacts)
+                : user.emergency_contacts || [];
+
+        const contactsWithAvatar = contacts.map((contact, index) => ({
+            ...contact,
+            avatar: this.storageHandler.getImageUrl(
+                `./storage/emergency-contacts/${user.id}`,
+                `contact_${index + 1}`
+            )
+        }));
+
         return {
             ...user,
             birth_date: user.birth_date?.toISOString().split('T')[0],
-            avatar: `${process.env.BASE_URL}${user.avatar}`
+            avatar: user.avatar
+                ? `${process.env.BASE_URL}${user.avatar}`
+                : null,
+            emergency_contacts: contactsWithAvatar
         };
 
     }
