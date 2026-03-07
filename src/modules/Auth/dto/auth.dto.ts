@@ -165,6 +165,12 @@ export class UpdateUserDTO {
     @ApiProperty({ type: String, required: false })
     @IsOptional()
     @IsString()
+    emergency_contacts?: string;
+
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
     language?: string;
 
     @ApiProperty({ type: String, required: false })

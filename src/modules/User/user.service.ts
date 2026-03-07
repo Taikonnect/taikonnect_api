@@ -283,8 +283,8 @@ export class UserService {
                 phone: true,
                 address: true,
                 observation: true,
+                emergency_contacts: true,
 
-                emergencyContacts: true,
                 permissionUsers: {
                     select: {
                         profile: true
