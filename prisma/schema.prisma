@@ -16,7 +16,7 @@ model User {
   nickname  String? @db.VarChar(255)
   password  String?
 
-  birth_date DateTime
+  birth_date DateTime @db.Date
 
   rg    String?
   cpf   String?

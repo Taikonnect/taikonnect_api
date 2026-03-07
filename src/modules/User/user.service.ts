@@ -293,7 +293,10 @@ export class UserService {
             },
         });
 
-        return user;
+        return {
+            ...user,
+            birth_date: user.birth_date?.toISOString().split('T')[0]
+        };
 
     }
 
@@ -304,10 +307,10 @@ export class UserService {
             birth_date: new Date(`${data.birth_date}T00:00:00`)
         }
 
-        
+
         try {
 
-            const exist =  await this.prismaService.user.findUnique({
+            const exist = await this.prismaService.user.findUnique({
                 where: {
                     id: data.id
                 }
