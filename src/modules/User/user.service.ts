@@ -376,6 +376,8 @@ export class UserService {
             updateData.avatar = avatar;
         }
 
+        delete updateData.emergency_contacts;
+
         await this.prismaService.user.update({
             where: { id: data.id },
             data: updateData
