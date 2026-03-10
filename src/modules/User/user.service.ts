@@ -360,18 +360,21 @@ export class UserService {
             }
         })
 
-        for (const contact of emergencyContactsData) {
+        await Promise.all(
+            emergencyContactsData.map((contact, index) => {
 
-            await this.prismaService.emergencyContact.create({
-                data: {
-                    name: contact?.name || '',
-                    phone: contact?.phone || '',
-                    avatar: contact.buffer,
-                    user_id: data.id
-                }
+                const file = emergencyContacts.find(e => e.index === index)
+
+                return this.prismaService.emergencyContact.create({
+                    data: {
+                        name: contact?.name || '',
+                        phone: contact?.phone || '',
+                        avatar: file?.buffer || null,
+                        user_id: data.id
+                    }
+                })
             })
-
-        }
+        );
 
         if (avatar) {
             updateData.avatar = avatar;
