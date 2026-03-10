@@ -370,7 +370,7 @@ export class UserService {
                         name: contact?.name || '',
                         phone: contact?.phone || '',
                         relationship: contact?.relationship || '',
-                        avatar: file?.buffer || null,
+                        ...(file && { avatar: file.buffer }),
                         user_id: data.id
                     }
                 })
