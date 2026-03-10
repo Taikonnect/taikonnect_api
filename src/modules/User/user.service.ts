@@ -361,12 +361,11 @@ export class UserService {
         })
 
         for (const contact of emergencyContactsData) {
-            const contactData = emergencyContactsData[contact.index];
 
             await this.prismaService.emergencyContact.create({
                 data: {
-                    name: contactData?.name || '',
-                    phone: contactData?.phone || '',
+                    name: contact?.name || '',
+                    phone: contact?.phone || '',
                     avatar: contact.buffer,
                     user_id: data.id
                 }
