@@ -360,7 +360,7 @@ export class UserService {
             }
         })
 
-        for (const contact of emergencyContacts) {
+        for (const contact of emergencyContactsData) {
             const contactData = emergencyContactsData[contact.index];
 
             await this.prismaService.emergencyContact.create({
