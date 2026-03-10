@@ -354,28 +354,30 @@ export class UserService {
             }
         }
 
-        await this.prismaService.emergencyContact.deleteMany({
-            where: {
-                user_id: data.id
-            }
-        })
+        if (emergencyContactsData?.length > 0) {
+            await this.prismaService.emergencyContact.deleteMany({
+                where: {
+                    user_id: data.id
+                }
+            });
 
-        await Promise.all(
-            emergencyContactsData.map((contact, index) => {
+            await Promise.all(
+                emergencyContactsData.map((contact, index) => {
 
-                const file = emergencyContacts.find(e => e.index === index)
+                    const file = emergencyContacts.find(e => e.index === index)
 
-                return this.prismaService.emergencyContact.create({
-                    data: {
-                        name: contact?.name || '',
-                        phone: contact?.phone || '',
-                        relationship: contact?.relationship || '',
-                        ...(file && { avatar: file.buffer }),
-                        user_id: data.id
-                    }
+                    return this.prismaService.emergencyContact.create({
+                        data: {
+                            name: contact?.name || '',
+                            phone: contact?.phone || '',
+                            relationship: contact?.relationship || '',
+                            ...(file && { avatar: file.buffer }),
+                            user_id: data.id
+                        }
+                    })
                 })
-            })
-        );
+            );
+        }
 
         if (avatar) {
             updateData.avatar = avatar;
