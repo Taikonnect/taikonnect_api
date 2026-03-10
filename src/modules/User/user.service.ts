@@ -318,6 +318,8 @@ export class UserService {
     }
 
     async update(data: UpdateUserDTO, files?: any) {
+
+        const uploadedFiles = files ?? [];
         const updateData: any = {
             ...data,
             is_active: await this.booleanHandleService.convert(data.is_active),
@@ -335,7 +337,7 @@ export class UserService {
         let avatar: Buffer | null = null
         const emergencyContacts: { index: number, buffer: Buffer }[] = []
 
-        for (const file of files) {
+        for (const file of uploadedFiles) {
 
             if (file.fieldname === 'profile-avatar') {
                 avatar = file.buffer
