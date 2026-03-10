@@ -286,8 +286,9 @@ export class UserService {
                 phone: true,
                 address: true,
                 observation: true,
-                emergency_contacts: true,
                 avatar: true,
+
+                emergencyContacts: true,
 
                 permissionUsers: {
                     select: {
@@ -297,32 +298,26 @@ export class UserService {
             },
         });
 
-        const contacts =
-            typeof user.emergency_contacts === 'string'
-                ? JSON.parse(user.emergency_contacts)
-                : user.emergency_contacts || [];
+        const avatarBase64 = user.avatar
+            ? `data:image/png;base64,${user.avatar.toString('base64')}`
+            : null;
 
-        const contactsWithAvatar = contacts.map((contact, index) => ({
+        const emergencyContacts = user.emergencyContacts?.map(contact => ({
             ...contact,
-            avatar: this.storageHandler.getImageUrl(
-                `./storage/emergency-contacts/${user.id}`,
-                `contact_${index + 1}`
-            )
+            avatar: contact.avatar
+                ? `data:image/png;base64,${contact.avatar.toString('base64')}`
+                : null
         }));
 
         return {
             ...user,
+            avatar: avatarBase64,
+            emergencyContacts,
             birth_date: user.birth_date?.toISOString().split('T')[0],
-            avatar: user.avatar
-                ? `${process.env.BASE_URL}${user.avatar}`
-                : null,
-            emergency_contacts: contactsWithAvatar
         };
-
     }
 
-    async update(data: UpdateUserDTO, avatar?: Multer.File) {
-
+    async update(data: UpdateUserDTO, files?: any) {
         const updateData: any = {
             ...data,
             is_active: await this.booleanHandleService.convert(data.is_active),
@@ -331,15 +326,62 @@ export class UserService {
             })
         }
 
+        const emergencyContactsData = data.emergency_contacts
+            ? typeof data.emergency_contacts === 'string'
+                ? JSON.parse(data.emergency_contacts)
+                : data.emergency_contacts
+            : [];
+
+        let avatar: Buffer | null = null
+        const emergencyContacts: { index: number, buffer: Buffer }[] = []
+
+        for (const file of files) {
+
+            if (file.fieldname === 'profile-avatar') {
+                avatar = file.buffer
+            }
+
+            if (file.fieldname.startsWith('emergency-contacts-avatar')) {
+
+                const index = Number(file.fieldname.split('-').pop())
+
+                emergencyContacts.push({
+                    index,
+                    buffer: file.buffer
+                })
+            }
+        }
+
+        await this.prismaService.emergencyContact.deleteMany({
+            where: {
+                user_id: data.id
+            }
+        })
+
+        for (const contact of emergencyContacts) {
+            const contactData = emergencyContactsData[contact.index];
+
+            await this.prismaService.emergencyContact.create({
+                data: {
+                    name: contactData?.name || '',
+                    phone: contactData?.phone || '',
+                    avatar: contact.buffer,
+                    user_id: data.id
+                }
+            })
+
+        }
+
         if (avatar) {
-            updateData.avatar = `/storage/avatar/${data.id}/${avatar.filename}`;
+            updateData.avatar = avatar;
         }
 
         await this.prismaService.user.update({
             where: { id: data.id },
             data: updateData
         });
-
+        console.log(emergencyContacts)
+        console.log(updateData)
         return {
             message: 'Usuário atualizado com sucesso',
         };

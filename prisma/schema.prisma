@@ -22,10 +22,9 @@ model User {
   cpf   String?
   phone String?
 
-  avatar String? @db.VarChar(255)
+  avatar Bytes?
 
   address Json?
-  emergency_contacts Json?
 
   account_stage String?
   language      String
@@ -90,12 +89,15 @@ model PermissionUser {
 }
 
 model EmergencyContact {
+  id      String @id @default(uuid())
+  name    String
+  phone   String
+  relationship   String?
+
+  avatar Bytes?
+
   user_id String
-  user    User   @relation(fields: [user_id], references: [id])
+  user    User @relation(fields: [user_id], references: [id])
 
-  name String
-  phone String
-
-  @@id([user_id])
   @@map("emergency_contacts")
 }

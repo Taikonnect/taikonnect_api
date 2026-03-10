@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean, MaxLength, IsDateString } from "@nestjs/class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean, MaxLength, IsDateString, IsJSON } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginDTO {
@@ -164,9 +164,8 @@ export class UpdateUserDTO {
 
     @ApiProperty({ type: String, required: false })
     @IsOptional()
-    @IsString()
+    @IsJSON()
     emergency_contacts?: string;
-
 
     @ApiProperty({ type: String, required: false })
     @IsOptional()
