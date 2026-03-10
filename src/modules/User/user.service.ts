@@ -334,6 +334,12 @@ export class UserService {
                 : data.emergency_contacts
             : [];
 
+        const address = data.address
+            ? typeof data.address === 'string'
+                ? JSON.parse(data.address)
+                : data.address
+            : [];
+
         let avatar: Buffer | null = null
         const emergencyContacts: { index: number, buffer: Buffer }[] = []
 
@@ -394,7 +400,7 @@ export class UserService {
 
         await this.prismaService.user.update({
             where: { id: data.id },
-            data: updateData
+            data: {...updateData, address: address}
         });
         console.log(emergencyContacts)
         console.log(updateData)
