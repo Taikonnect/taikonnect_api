@@ -369,6 +369,7 @@ export class UserService {
                     data: {
                         name: contact?.name || '',
                         phone: contact?.phone || '',
+                        relationship: contact?.relationship || '',
                         avatar: file?.buffer || null,
                         user_id: data.id
                     }
