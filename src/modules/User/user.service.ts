@@ -361,6 +361,7 @@ export class UserService {
 
     async update(data: UpdateUserDTO, files?: any) {
 
+        const permissions = data.profiles ?? [];
         const uploadedFiles = files ?? [];
         const updateData: any = {
             ...data,
@@ -444,8 +445,21 @@ export class UserService {
             where: { id: data.id },
             data: { ...updateData, address: address }
         });
-        console.log(emergencyContacts)
-        console.log(updateData)
+
+
+        await this.prismaService.permissionUser.deleteMany({
+            where: {
+                user_id: data.id
+            }
+        });
+
+        await this.prismaService.permissionUser.createMany({
+            data: permissions.map(permission => ({
+                user_id: data.id,
+                profile: permission
+            }))
+        });
+
         return {
             message: 'Usuário atualizado com sucesso',
         };

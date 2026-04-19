@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean, MaxLength, IsDateString, IsJSON } from "@nestjs/class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean, MaxLength, IsDateString, IsJSON, IsArray } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginDTO {
@@ -182,5 +182,10 @@ export class UpdateUserDTO {
     @IsString()
     @MaxLength(255)
     observation?: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsArray()
+    profiles?: string[];
 
 }
