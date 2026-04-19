@@ -25,6 +25,9 @@ export class UserController {
         return await this.userService.create(data);
     }
 
+    @ApiOperation({ summary: 'Verificar permissão' })
+    @ApiResponse({ status: 200, description: 'Permissão verificada com sucesso' })
+    @ApiResponse({ status: 401, description: 'Permissão não verificada' })
     @Get('/check-permission')
     async checkPermission(@Query() data: CheckPermissionDTO) {
         return await this.userService.checkPermission(data);

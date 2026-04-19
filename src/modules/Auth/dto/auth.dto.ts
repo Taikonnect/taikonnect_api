@@ -86,10 +86,12 @@ export class ChangePasswordDTO {
 }
 
 export class CheckPermissionDTO {
+    @ApiProperty({ type: String, required: true, example: 'ID' })
     @IsNotEmpty()
     @IsString()
     user_id: string;
 
+    @ApiProperty({ type: String, required: true, example: 'F01' })
     @IsNotEmpty()
     @IsString()
     permission: string;
