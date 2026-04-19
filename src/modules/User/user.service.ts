@@ -362,6 +362,7 @@ export class UserService {
     async update(data: UpdateUserDTO, files?: any) {
 
         const permissions = data.profiles ?? [];
+        delete data.profiles;
         const uploadedFiles = files ?? [];
         const updateData: any = {
             ...data,
