@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../Auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../auth/dto/auth.dto';
 import * as bcrypt from 'bcryptjs'
 import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
@@ -248,19 +248,61 @@ export class UserService {
             {
                 label: 'Administrador',
                 value: ProfileType.Admin,
+                permissions: [
+                    {
+                        label: 'Acessar área de admin',
+                        value: PermissionType.A01,
+                    },
+                    {
+                        label: 'Gerenciar publicações',
+                        value: PermissionType.P01,
+                    },
+                    {
+                        label: 'Gerenciar eventos',
+                        value: PermissionType.E01,
+                    },
+                    {
+                        label: 'Gerenciar repertório',
+                        value: PermissionType.R01,
+                    },
+                    {
+                        label: 'Gerenciar financeiro',
+                        value: PermissionType.F01,
+                    },
+                ]
             },
             {
                 label: 'Moderador',
                 value: ProfileType.Moderator,
+                permissions: [
+                    {
+                        label: 'Gerenciar publicações',
+                        value: PermissionType.P01,
+                    },
+                    {
+                        label: 'Gerenciar eventos',
+                        value: PermissionType.E01,
+                    },
+                    {
+                        label: 'Gerenciar repertório',
+                        value: PermissionType.R01,
+                    },
+                    {
+                        label: 'Gerenciar financeiro',
+                        value: PermissionType.F01,
+                    },
+                ]
             },
             {
                 label: 'Financeiro',
                 value: ProfileType.Financial,
+                permissions: [
+                    {
+                        label: 'Gerenciar financeiro',
+                        value: PermissionType.F01,
+                    },
+                ]
             },
-            {
-                label: 'Membro',
-                value: ProfileType.Member,
-            }
         ]
 
         return ProfileTypeList;
@@ -400,7 +442,7 @@ export class UserService {
 
         await this.prismaService.user.update({
             where: { id: data.id },
-            data: {...updateData, address: address}
+            data: { ...updateData, address: address }
         });
         console.log(emergencyContacts)
         console.log(updateData)
@@ -408,4 +450,12 @@ export class UserService {
             message: 'Usuário atualizado com sucesso',
         };
     }
+
+    async updatePermissions(data: { profile: string, permissions: string[] }) {
+
+        return {
+            message: 'Permissões atualizadas com sucesso',
+        };
+    }
+
 }
