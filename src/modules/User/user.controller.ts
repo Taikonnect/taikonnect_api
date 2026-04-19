@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Query, UploadedFile, UploadedFiles,
 import { Public } from 'src/decorators/auth-guard.decorator';
 import { UserService } from './user.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiConsumes } from '@nestjs/swagger';
-import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../Auth/dto/auth.dto';
 import { MailService } from 'src/external/mailer/mail.service';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { Multer } from 'multer';

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../auth/dto/auth.dto';
+import { CheckPermissionDTO, CreateUserDTO, ListDTO, UpdateUserDTO } from '../Auth/dto/auth.dto';
 import * as bcrypt from 'bcryptjs'
 import { AccountStatus } from 'src/shared/constants/account-status.enum';
 import { PermissionType, ProfileType } from 'src/shared/constants/profile.enum';
