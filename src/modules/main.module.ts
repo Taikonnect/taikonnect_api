@@ -10,12 +10,15 @@ import { TeamService } from './Team/team.service';
 import { BooleanHandlerService } from 'src/shared/handlers/boolean.handler';
 import { ProfileHandler } from 'src/shared/handlers/profile.handler';
 import { StorageHandler } from 'src/shared/handlers/storage.handler';
+import { CategoryService } from './Category/category.service';
+import { CategoryController } from './Category/category.controller';
 
 @Module({
     controllers: [
         UserController,
         TeamController,
-        AuthController
+        AuthController,
+        CategoryController
     ],
     providers: [
         PrismaService,
@@ -25,7 +28,8 @@ import { StorageHandler } from 'src/shared/handlers/storage.handler';
         TeamService,
         BooleanHandlerService,
         ProfileHandler,
-        StorageHandler
-    ]
+        StorageHandler,
+        CategoryService
+    ],
 })
 export class MainModule { }
