@@ -12,13 +12,16 @@ import { ProfileHandler } from 'src/shared/handlers/profile.handler';
 import { StorageHandler } from 'src/shared/handlers/storage.handler';
 import { CategoryService } from './Category/category.service';
 import { CategoryController } from './Category/category.controller';
+import { PublicationService } from './Publication/publication.service';
+import { PublicationController } from './Publication/publication.controller';
 
 @Module({
     controllers: [
         UserController,
         TeamController,
         AuthController,
-        CategoryController
+        CategoryController,
+        PublicationController
     ],
     providers: [
         PrismaService,
@@ -29,7 +32,8 @@ import { CategoryController } from './Category/category.controller';
         BooleanHandlerService,
         ProfileHandler,
         StorageHandler,
-        CategoryService
+        CategoryService,
+        PublicationService
     ],
 })
 export class MainModule { }

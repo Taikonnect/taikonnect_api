@@ -41,6 +41,7 @@ model User {
   passwordChanges   PasswordChange[]
   permissionUsers   PermissionUser[]
   emergencyContacts EmergencyContact[]
+  publications      Publication[]
 
   @@map("users")
 }
@@ -55,8 +56,9 @@ model Group {
   created_at DateTime @default(now()) @db.Timestamp
   updated_at DateTime @updatedAt @db.Timestamp
 
-  users      User[]
-  categories Category[]
+  users        User[]
+  categories   Category[]
+  publications Publication[]
 
   @@map("groups")
 }
@@ -116,4 +118,25 @@ model Category {
   updated_at DateTime @updatedAt
 
   @@map("categories")
+}
+
+model Publication {
+  id          String  @id @default(uuid())
+  title       String  @db.VarChar(255)
+  description String? @db.Text
+  link        Json?
+
+  group_id String?
+  Group    Group?  @relation(fields: [group_id], references: [id])
+
+  created_by String?
+  createdBy  User?   @relation(fields: [created_by], references: [id])
+
+  files      Json?
+  categories Json?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("publications")
 }
