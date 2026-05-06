@@ -3,6 +3,7 @@ import { PublicationService } from './publication.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { User } from 'src/decorators/user.decorator';
 
 @ApiTags('Publicações')
 @Controller('publications')
@@ -20,8 +21,8 @@ export class PublicationController {
     @Get()
     @ApiOperation({ summary: 'Lista todas as publicações' })
     @ApiResponse({ status: 200, description: 'Retorna a lista de publicações.' })
-    findAll() {
-        return this.publicationService.findAll();
+    findAll(@User() user_id: string) {
+        return this.publicationService.findAll(user_id);
     }
 
     @Get(':id')

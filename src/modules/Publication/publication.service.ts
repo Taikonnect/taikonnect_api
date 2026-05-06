@@ -22,13 +22,37 @@ export class PublicationService {
         }
     }
 
-    async findAll() {
+    async findAll(user_id: string) {
         try {
-
-            return await this.prisma.publication.findMany({
-                include: { Group: true, createdBy: true },
+            const categoriesOfUser = await this.prisma.categoryUser.findMany({
+                where: { user_id: user_id },
+                include: { Category: true },
             });
+
+            const publications = await this.prisma.publication.findMany({
+                include: {
+                    Group: true, createdBy: {
+                        select: {
+                            id: true,
+                            name: true,
+                            nickname: true,
+                            avatar: true,
+                        }
+                    }
+                },
+            });
+
+            const userCategoryIds = new Set(categoriesOfUser.map((c) => c.category_id));
+
+            const filteredPublications = publications.filter((publication) => {
+                const categoriesList = (publication.categories as string[]) || [];
+                return categoriesList.some((catId) => userCategoryIds.has(catId));
+            });
+
+            return filteredPublications;
+
         } catch (error) {
+            console.log(error);
             throw new InternalServerErrorException('Error fetching publications');
         }
     }
