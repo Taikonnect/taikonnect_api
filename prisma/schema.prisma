@@ -42,6 +42,7 @@ model User {
   permissionUsers   PermissionUser[]
   emergencyContacts EmergencyContact[]
   publications      Publication[]
+  categoryUsers     CategoryUser[]
 
   @@map("users")
 }
@@ -114,8 +115,9 @@ model Category {
 
   is_active Boolean @default(true)
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  categoryUsers CategoryUser[]
 
   @@map("categories")
 }
@@ -139,4 +141,18 @@ model Publication {
   updated_at DateTime @updatedAt
 
   @@map("publications")
+}
+
+model CategoryUser {
+  user_id     String
+  category_id String
+
+  User     User     @relation(fields: [user_id], references: [id])
+  Category Category @relation(fields: [category_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, category_id])
+  @@map("category_users")
 }

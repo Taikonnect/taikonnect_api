@@ -25,7 +25,7 @@ export class CreatePublicationDto {
     @IsUUID()
     created_by?: string;
 
-    @ApiPropertyOptional({ example: [{ name: 'file.pdf' }] })
+    @ApiPropertyOptional({ example: [{ name: 'file.pdf', type: 'application/pdf', data: 'binary' }] })
     @IsOptional()
     files?: any;
 

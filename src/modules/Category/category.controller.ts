@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
+import { LinkCategoryUsersDto } from './dto/link-category-user.dto';
 
 @ApiTags('Categoria')
 @Controller('category')
@@ -34,4 +35,34 @@ export class CategoryController {
         return await this.categoryService.update(id, data);
     }
 
+    @ApiOperation({ summary: 'Vincular lista de usuários a uma categoria' })
+    @ApiResponse({ status: 201, description: 'Vínculos criados com sucesso' })
+    @Post('/link-users-list')
+    async linkUsersList(@Body() data: LinkCategoryUsersDto) {
+        return await this.categoryService.linkUsersToCategory(data);
+    }
+
+    @ApiOperation({ summary: 'Remover vínculo entre usuário e categoria' })
+    @ApiResponse({ status: 200, description: 'Vínculo removido com sucesso' })
+    @Delete('/unlink-user/:userId/:categoryId')
+    @ApiParam({ name: 'userId', type: 'string' })
+    @ApiParam({ name: 'categoryId', type: 'string' })
+    async unlinkUser(
+        @Param('userId', new ParseUUIDPipe()) userId: string,
+        @Param('categoryId', new ParseUUIDPipe()) categoryId: string,
+    ) {
+        return await this.categoryService.unlinkUser(userId, categoryId);
+    }
+
+    @ApiOperation({ summary: 'Listar usuários vinculados a uma categoria' })
+    @Get('/:id/users')
+    async listCategoryUsers(@Param('id', new ParseUUIDPipe()) id: string) {
+        return await this.categoryService.listUsersByCategory(id);
+    }
+
+    @ApiOperation({ summary: 'Listar categorias vinculadas a um usuário' })
+    @Get('/user/:userId')
+    async listUserCategories(@Param('userId', new ParseUUIDPipe()) userId: string) {
+        return await this.categoryService.listCategoriesByUser(userId);
+    }
 }
